@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL = ArtificialL1fe</title>
+    <style>
+        /* Minimalistic CSS Reset & Font Setup */
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #030303; /* Deep Black */
+            color: #ffffff; /* White */
+            font-family: 'Rajdhani', sans-serif; /* Futuristic font */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The Canvas for the Neural/Digital Network */
+        #networkCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Glassmorphism/Minimalist Container for Text */
+        .content-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 50px 40px;
+            background: rgba(10, 10, 10, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 4px;
+            max-width: 650px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            font-weight: 400;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        p {
+            color: #a0a0a0; /* Grey */
+            line-height: 1.8;
+            font-size: 1.2em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Glowing Accent line */
+        .accent-line {
+            width: 50px;
+            height: 1px;
+            background-color: #ffffff;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 0 10px #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="networkCanvas"></canvas>
+
+    <div class="content-container">
+        <h1>Welcome To The AL = ArtificialL1fe .</h1>
+        <div class="accent-line"></div>
+        <p>You Successfully Created Your AL Account Now Go Back To The AL App -><br>And Login With Your Email And Password.</p>
+    </div>
+
+    <script>
+        // JavaScript for the Artificial Neurons / Digital Connection Animation
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        
+        // Adjust number based on screen size to maintain minimalistic feel
+        const numberOfParticles = (canvas.width * canvas.height) / 15000;
+
+        // Mouse interaction object
+        const mouse = {
+            x: null,
+            y: null,
+            radius: (canvas.height / 80) * (canvas.width / 80)
+        }
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Create Particle / Node class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() - 0.5) * 0.5; // Slow movement
+                this.directionY = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+                this.color = '#ffffff';
+            }
+            // Method to move particles
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // Move particle
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+            // Method to draw particles
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Initialize particle array
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        // Connect nodes to simulate artificial neurons/digital web
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                    + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    // If nodes are close enough, draw a grey line
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        // Grey lines matching the theme
+                        ctx.strokeStyle = 'rgba(100, 100, 100,' + opacityValue + ')'; 
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        // Resize event to keep canvas responsive
+        window.addEventListener('resize', function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = (canvas.height / 80) * (canvas.width / 80);
+            init();
+        });
+
+        // Start animation
+        init();
+        animate();
+    </script>
+</body>
+</html>
